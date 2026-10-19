@@ -1,22 +1,34 @@
+
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
     [Header("Jauges de Survie (0 à 100)")]
-    public float cold = 100f;   // Froid[cite: 6, 7]
-    public float hunger = 100f; // Faim[cite: 6, 7]
-    public float thirst = 100f; // Soif[cite: 7]
+    public float cold = 100f;
+    public float hunger = 100f;
+    public float thirst = 100f;
 
-    public float decreaseRate = 0.2f; // Vitesse de diminution des points
+    public float decreaseRate = 0.2f;
+
+    // Indique si le joueur se trouve dans une zone réchauffante
+    public bool isHeating = false;
 
     void Update()
     {
-        // Les jauges diminuent progressivement avec le temps
-        if (cold > 0) cold -= decreaseRate * Time.deltaTime;
-        if (hunger > 0) hunger -= decreaseRate * Time.deltaTime;
-        if (thirst > 0) thirst -= decreaseRate * Time.deltaTime;
+        // Le froid diminue uniquement si le joueur est loin du feu
+        if (cold > 0 && !isHeating)
+        {
+            cold -= decreaseRate * Time.deltaTime;
+        }
 
-        // Optionnel : empécher les jauges de descendre sous 0 ou de dépasser 100
+        // La faim et la soif diminuent toujours
+        if (hunger > 0)
+            hunger -= decreaseRate * Time.deltaTime;
+
+        if (thirst > 0)
+            thirst -= decreaseRate * Time.deltaTime;
+
+        // Les valeurs restent entre 0 et 100
         cold = Mathf.Clamp(cold, 0f, 100f);
         hunger = Mathf.Clamp(hunger, 0f, 100f);
         thirst = Mathf.Clamp(thirst, 0f, 100f);
