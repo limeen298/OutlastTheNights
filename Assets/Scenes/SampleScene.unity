@@ -498,6 +498,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1689225121}
   - component: {fileID: 1689225122}
+  - component: {fileID: 1689225123}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -534,6 +535,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bd0363793c514684f0eecdf274f90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
+--- !u!114 &1689225123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1689225120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4563a3489a3dfc44bcaac7754cc458a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cold: 100
+  hunger: 100
+  thirst: 100
+  decreaseRate: 0.2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
