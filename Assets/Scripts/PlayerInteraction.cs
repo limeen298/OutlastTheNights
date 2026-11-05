@@ -1,43 +1,94 @@
 using UnityEngine;
 
+/// <summary>
+/// Détecte l'objet visé par le joueur (Raycast depuis la caméra),
+/// affiche l'indication "[E] Ramasser" et gère le ramassage.
+/// </summary>
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Configuration")]
-    public float interactionDistance = 6f;
+    [Tooltip("Distance maximale pour interagir (en mètres).")]
+    public float interactionDistance = 3f;
     public KeyCode interactKey = KeyCode.E;
 
-    private Camera mainCamera;
+    [Tooltip("Layers pris en compte par le Raycast.")]
+    [SerializeField] private LayerMask interactionMask = Physics.DefaultRaycastLayers;
 
-    void Start()
+    [Header("Références")]
+    [Tooltip("Inventaire du joueur (trouvé automatiquement si vide).")]
+    [SerializeField] private Inventory inventory;
+    [SerializeField] private InteractionPromptUI promptUI;
+
+    private Camera mainCamera;
+    private ItemPickup currentTarget;
+
+    private void Start()
     {
         mainCamera = Camera.main;
+
+        if (inventory == null)
+            inventory = FindFirstObjectByType<Inventory>();
     }
 
-    void Update()
+    private void Update()
     {
         if (mainCamera == null) return;
 
-        // Origine du rayon (légèrement décalée vers l'avant pour éviter la hitbox du joueur)
-        Vector3 rayOrigin = mainCamera.transform.position + mainCamera.transform.forward * 0.5f;
-        Vector3 rayDirection = mainCamera.transform.forward;
+        currentTarget = FindTarget();
+        UpdatePrompt();
 
-        // Trace un rayon rouge très visible dans la vue Scene pendant 0.1s
-        Debug.DrawRay(rayOrigin, rayDirection * interactionDistance, Color.red, 0.1f);
-
-        // Physics.Raycast avec Ignore pour ignorer la Heating Zone (Triggers)
-        RaycastHit hit;
-        if (Physics.Raycast(rayOrigin, rayDirection, out hit, interactionDistance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        // Ramassage uniquement si un objet est visé et à portée
+        if (currentTarget != null && Input.GetKeyDown(interactKey))
         {
-            if (Input.GetKeyDown(interactKey))
+            if (currentTarget.Interact(inventory))
             {
-                Debug.Log("[Raycast] Touché : " + hit.collider.gameObject.name);
-
-                ItemPickup item = hit.collider.GetComponent<ItemPickup>();
-                if (item != null)
-                {
-                    item.Interact();
-                }
+                currentTarget = null;
+                promptUI?.Hide();
             }
+        }
+    }
+
+    /// <summary>
+    /// Lance un rayon depuis la caméra et retourne l'objet ramassable visé (ou null).
+    /// </summary>
+    private ItemPickup FindTarget()
+    {
+        Transform cam = mainCamera.transform;
+
+        // Origine légèrement décalée vers l'avant pour éviter le collider du joueur
+        Vector3 origin = cam.position + cam.forward * 0.5f;
+
+        Debug.DrawRay(origin, cam.forward * interactionDistance, Color.red);
+
+        // QueryTriggerInteraction.Ignore : on ignore les zones (ex : Heating Zone)
+        if (Physics.Raycast(origin, cam.forward, out RaycastHit hit, interactionDistance,
+                            interactionMask, QueryTriggerInteraction.Ignore))
+        {
+            // GetComponentInParent : fonctionne aussi si le collider est sur un enfant du modèle
+            return hit.collider.GetComponentInParent<ItemPickup>();
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Affiche ou cache l'indication selon l'objet visé.
+    /// </summary>
+    private void UpdatePrompt()
+    {
+        if (promptUI == null) return;
+
+        if (currentTarget == null)
+        {
+            promptUI.Hide();
+        }
+        else if (currentTarget.CanBePickedUp(inventory))
+        {
+            promptUI.Show($"[{interactKey}] Ramasser");
+        }
+        else
+        {
+            promptUI.Show("Inventaire plein");
         }
     }
 }
