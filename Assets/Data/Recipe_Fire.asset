@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Recipe_Fire
+  m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
+  recipeName: Feu de camp
+  craftKey: 102
+  ingredients:
+  - type: 0
+    amount: 2
+  - type: 1
+    amount: 1
+  resultPrefab: {fileID: 2686642538063088566, guid: b1f8c6ea21ff6544dbbb471839a7b40e, type: 3}
