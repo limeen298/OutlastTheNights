@@ -9,14 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Recipe_Fire
-  m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
+  m_Script: {fileID: 11500000, guid: abf351555b15df3469069f7ad5918d43, type: 3}
+  m_Name: Recipe_Torche
+  m_EditorClassIdentifier: 
   recipeName: Feu de camp
   craftKey: 102
   ingredients:
   - type: 0
-    amount: 2
-  - type: 1
     amount: 1
-  resultPrefab: {fileID: 2686642538063088566, guid: b1f8c6ea21ff6544dbbb471839a7b40e, type: 3}
+  resultPrefab: {fileID: 0}

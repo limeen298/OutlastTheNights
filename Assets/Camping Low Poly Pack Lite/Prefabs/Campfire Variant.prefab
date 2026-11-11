@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6343279916206964652}
   - component: {fileID: 3607568439633819617}
   - component: {fileID: 3851249357986473023}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 339835556076203093}
   - component: {fileID: 8237889610523990840}
   - component: {fileID: 6959640393324404435}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4965,7 +4965,7 @@ GameObject:
   - component: {fileID: 6902217120775916356}
   - component: {fileID: 6146027037776407879}
   - component: {fileID: 940761785001285333}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HeatingZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5028,6 +5028,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2035264638583758912, guid: 971c3e3e3ebb1c74489ee8322556d6bf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5825894237546784143, guid: 971c3e3e3ebb1c74489ee8322556d6bf, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 7879238690498536592, guid: 971c3e3e3ebb1c74489ee8322556d6bf, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.5486827
@@ -5071,6 +5079,10 @@ PrefabInstance:
     - target: {fileID: 8507322090642068218, guid: 971c3e3e3ebb1c74489ee8322556d6bf, type: 3}
       propertyPath: m_Name
       value: Campfire Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507322090642068218, guid: 971c3e3e3ebb1c74489ee8322556d6bf, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 705662244148281045, guid: 971c3e3e3ebb1c74489ee8322556d6bf, type: 3}

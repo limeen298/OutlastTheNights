@@ -24,15 +24,19 @@ public class CraftingRecipe : ScriptableObject
     [Header("Informations")]
     public string recipeName = "Feu de camp";
 
-    [Tooltip("Touche à appuyer pour fabriquer.")]
-    public KeyCode craftKey = KeyCode.F;
+    [Tooltip("Icône / aperçu affiché dans le menu de craft (Texture Type = Sprite).")]
+    public Sprite icon;
 
     [Header("Fabrication")]
     [Tooltip("Ressources consommées. Un seul élément par type de ressource.")]
     public Ingredient[] ingredients;
 
-    [Tooltip("Objet créé dans le monde (ex : le prefab Campfire).")]
+    [Tooltip("Objet créé dans le monde (un PREFAB du Project, ex : Campfire_Craft).")]
     public GameObject resultPrefab;
+
+    [Header("Placement")]
+    [Tooltip("Ajustement de la rotation. Mettez Y à 180 pour que l'objet vous fasse face.")]
+    public Vector3 rotationOffset = new Vector3(0, 180, 0); // 180 par défaut pour faire face au joueur
 
     /// <summary>
     /// Texte du coût de la recette, ex : "2 Wood + 1 Stone".

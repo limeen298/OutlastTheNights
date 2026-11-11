@@ -1,9 +1,14 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Système de fabrication : quand le joueur appuie sur la touche d'une recette,
-/// on vérifie ses ressources, on les consomme et on place l'objet devant lui.
-/// À placer sur le GameObject du joueur (à côté de Inventory).
+/// Logique de fabrication : vérifie les ressources, les consomme et place l'objet devant le joueur.
+/// Ce script ne gère PAS l'interface : c'est CraftingUI qui affiche le menu et appelle TryCraft().
+///
+/// Mise en place dans l'Inspector (sur le GameObject du joueur, à côté de Inventory) :
+///  - Inventory       : trouvé automatiquement si laissé vide
+///  - Notification UI : le Canvas qui porte NotificationUI (optionnel)
+///  - Recipes         : la liste des recettes disponibles (une seule fois, l'UI la lit ici)
 /// </summary>
 public class CraftingSystem : MonoBehaviour
 {
@@ -12,7 +17,20 @@ public class CraftingSystem : MonoBehaviour
     [SerializeField] private Inventory inventory;
     [SerializeField] private NotificationUI notificationUI;
 
+    [Header("Déplacement")]
+    [Tooltip("Caméra principale pour viser les objets (trouvée automatiquement si vide).")]
+    [SerializeField] private Transform playerCamera;
+
+    [Tooltip("Touche pour attraper un objet.")]
+    [SerializeField] private KeyCode moveKey = KeyCode.R;
+
+    [Tooltip("Layer assigné aux objets fabriqués.")]
+    [SerializeField] private LayerMask craftedObjectLayer;
+
+    private Transform objectToMove; // L'objet actuellement tenu
+
     [Header("Recettes disponibles")]
+    [Tooltip("Liste unique des recettes : le menu de craft (CraftingUI) la lit directement ici.")]
     [SerializeField] private CraftingRecipe[] recipes;
 
     [Header("Placement de l'objet fabriqué")]
@@ -21,6 +39,11 @@ public class CraftingSystem : MonoBehaviour
 
     [Tooltip("Layers considérés comme du sol.")]
     [SerializeField] private LayerMask groundMask = Physics.DefaultRaycastLayers;
+
+    /// <summary>
+    /// Recettes disponibles (lecture seule), utilisées par l'UI.
+    /// </summary>
+    public IReadOnlyList<CraftingRecipe> Recipes => recipes;
 
     private void Awake()
     {
@@ -31,21 +54,13 @@ public class CraftingSystem : MonoBehaviour
             inventory = FindFirstObjectByType<Inventory>();
     }
 
-    private void Update()
-    {
-        // Une touche par recette (la liste est courte : aucun impact sur les performances)
-        for (int i = 0; i < recipes.Length; i++)
-        {
-            if (recipes[i] != null && Input.GetKeyDown(recipes[i].craftKey))
-                TryCraft(recipes[i]);
-        }
-    }
-
     /// <summary>
     /// Tente de fabriquer l'objet d'une recette. Retourne true si la fabrication a réussi.
     /// </summary>
     public bool TryCraft(CraftingRecipe recipe)
     {
+        if (recipe == null) return false;
+
         if (recipe.resultPrefab == null)
         {
             Debug.LogError($"[Craft] La recette '{recipe.name}' n'a pas de Result Prefab !", recipe);
@@ -67,11 +82,15 @@ public class CraftingSystem : MonoBehaviour
         }
 
         // 3) On consomme les ressources (déjà vérifiées à l'étape 1)
+        //    -> chaque retrait déclenche Inventory.OnInventoryChanged : l'UI se met à jour
         foreach (CraftingRecipe.Ingredient ingredient in recipe.ingredients)
             inventory.TryRemoveResource(ingredient.type, ingredient.amount);
 
         // 4) On crée l'objet dans le monde, orienté comme le joueur
-        Instantiate(recipe.resultPrefab, point, Quaternion.Euler(0f, transform.eulerAngles.y, 0f));
+        // 4) On crée l'objet dans le monde, avec la rotation du joueur + l'ajustement de la recette
+        Quaternion spawnRotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * Quaternion.Euler(recipe.rotationOffset);
+        Instantiate(recipe.resultPrefab, point, spawnRotation);
+
 
         Notify($"{recipe.recipeName} fabriqué !");
         return true;
@@ -79,9 +98,12 @@ public class CraftingSystem : MonoBehaviour
 
     /// <summary>
     /// Vérifie que l'inventaire contient tous les ingrédients de la recette.
+    /// Public : l'UI s'en sert pour griser les recettes impossibles.
     /// </summary>
-    private bool HasIngredients(CraftingRecipe recipe)
+    public bool HasIngredients(CraftingRecipe recipe)
     {
+        if (recipe == null || inventory == null) return false;
+
         foreach (CraftingRecipe.Ingredient ingredient in recipe.ingredients)
         {
             if (inventory.GetResourceCount(ingredient.type) < ingredient.amount)
@@ -118,5 +140,41 @@ public class CraftingSystem : MonoBehaviour
     {
         Debug.Log($"[Craft] {message}");
         notificationUI?.Show(message);
+    }
+
+    private void Update()
+    {
+        if (playerCamera == null) playerCamera = Camera.main.transform;
+
+        // 1. Si on tient un objet, on met à jour sa position
+        if (objectToMove != null)
+        {
+            if (TryGetPlacementPoint(out Vector3 point))
+            {
+                objectToMove.position = point; // Suit le sol
+
+                // Rotation optionnelle : on garde l'objet aligné avec le joueur pendant le déplacement
+                // (Modifiez cette ligne si vous voulez garder la rotation d'origine de l'objet)
+                objectToMove.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+            }
+
+            // Relâcher l'objet au clic gauche
+            if (Input.GetMouseButtonDown(0))
+            {
+                objectToMove = null;
+                Notify("Objet repositionné.");
+            }
+            return; // Bloque le reste des actions pendant qu'on déplace
+        }
+
+        // 2. Si on ne tient rien, on cherche à attraper avec la touche définie (R)
+        if (Input.GetKeyDown(moveKey))
+        {
+            if (Physics.Raycast(playerCamera.position, playerCamera.forward, out RaycastHit hit, 5f, craftedObjectLayer))
+            {
+                objectToMove = hit.transform;
+                Notify("Objet saisi. Clic gauche pour placer.");
+            }
+        }
     }
 }
