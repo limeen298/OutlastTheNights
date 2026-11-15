@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Recipe_Fire
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
   recipeName: Feu de camp
-  craftKey: 99
+  icon: {fileID: 21300000, guid: 90354010f47776447b8edf1073276a46, type: 3}
   ingredients:
   - type: 0
     amount: 2
   - type: 1
     amount: 1
   resultPrefab: {fileID: 2686642538063088566, guid: b1f8c6ea21ff6544dbbb471839a7b40e, type: 3}
+  rotationOffset: {x: 0, y: 180, z: 0}
