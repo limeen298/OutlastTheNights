@@ -8,7 +8,9 @@ public enum ResourceType
 {
     Wood,
     Stone,
-    Rope
+    Rope,
+    Food,
+    PoisonousBerry
 }
 
 /// <summary>

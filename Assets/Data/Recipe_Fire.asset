@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Recipe_Fire
   m_EditorClassIdentifier: Assembly-CSharp::CraftingRecipe
   recipeName: Feu de camp
-  craftKey: 102
+  craftKey: 99
   ingredients:
   - type: 0
     amount: 2
