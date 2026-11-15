@@ -7,10 +7,11 @@ public class SurvivalUI : MonoBehaviour
     // Référence au script qui gère les statistiques du joueur
     public PlayerStats playerStats;
 
-    // Les trois barres affichées à l'écran
+    // Les quatre barres affichées à l'écran
     public Slider coldBar;
     public Slider hungerBar;
     public Slider thirstBar;
+    public Slider healthBar;
 
     void Update()
     {
@@ -18,7 +19,8 @@ public class SurvivalUI : MonoBehaviour
         if (playerStats == null ||
             coldBar == null ||
             hungerBar == null ||
-            thirstBar == null)
+            thirstBar == null ||
+            healthBar == null)
         {
             return;
         }
@@ -27,6 +29,6 @@ public class SurvivalUI : MonoBehaviour
         coldBar.value = playerStats.cold;
         hungerBar.value = playerStats.hunger;
         thirstBar.value = playerStats.thirst;
+        healthBar.value = playerStats.health;
     }
 }
-

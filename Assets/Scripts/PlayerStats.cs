@@ -7,6 +7,7 @@ public class PlayerStats : MonoBehaviour
     public float cold = 100f;
     public float hunger = 100f;
     public float thirst = 100f;
+    public float health = 100f;
 
     public float decreaseRate = 0.2f;
 
@@ -23,14 +24,31 @@ public class PlayerStats : MonoBehaviour
 
         // La faim et la soif diminuent toujours
         if (hunger > 0)
+        {
             hunger -= decreaseRate * Time.deltaTime;
+        }
 
         if (thirst > 0)
+        {
             thirst -= decreaseRate * Time.deltaTime;
+        }
 
         // Les valeurs restent entre 0 et 100
         cold = Mathf.Clamp(cold, 0f, 100f);
         hunger = Mathf.Clamp(hunger, 0f, 100f);
         thirst = Mathf.Clamp(thirst, 0f, 100f);
+        health = Mathf.Clamp(health, 0f, 100f);
+    }
+
+    // Retirer des points de vie au joueur
+    public void TakeDamage(float damage)
+    {
+        health = Mathf.Clamp(health - damage, 0f, 100f);
+    }
+
+    // Restaurer la faim lorsque le joueur mange
+    public void RestoreHunger(float amount)
+    {
+        hunger = Mathf.Clamp(hunger + amount, 0f, 100f);
     }
 }
