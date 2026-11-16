@@ -42,7 +42,7 @@ public class CraftingUI : MonoBehaviour
     [SerializeField] private CraftingRecipeSlotUI slotPrefab;
 
     [Header("Configuration")]
-    [SerializeField] private KeyCode toggleKey = KeyCode.F;
+    [SerializeField] private KeyCode toggleKey = KeyCode.C;
 
     [Tooltip("Referme le menu juste après une fabrication réussie.")]
     [SerializeField] private bool closeAfterCraft = false;
