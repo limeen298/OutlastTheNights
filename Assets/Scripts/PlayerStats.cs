@@ -1,5 +1,7 @@
 
+
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -11,18 +13,23 @@ public class PlayerStats : MonoBehaviour
 
     public float decreaseRate = 0.2f;
 
-    // Indique si le joueur se trouve dans une zone réchauffante
     public bool isHeating = false;
+
+    [Header("Interface de santé")]
+    public Slider healthBar;
+
+    void Start()
+    {
+        UpdateHealthBar();
+    }
 
     void Update()
     {
-        // Le froid diminue uniquement si le joueur est loin du feu
         if (cold > 0 && !isHeating)
         {
             cold -= decreaseRate * Time.deltaTime;
         }
 
-        // La faim et la soif diminuent toujours
         if (hunger > 0)
         {
             hunger -= decreaseRate * Time.deltaTime;
@@ -33,22 +40,30 @@ public class PlayerStats : MonoBehaviour
             thirst -= decreaseRate * Time.deltaTime;
         }
 
-        // Les valeurs restent entre 0 et 100
         cold = Mathf.Clamp(cold, 0f, 100f);
         hunger = Mathf.Clamp(hunger, 0f, 100f);
         thirst = Mathf.Clamp(thirst, 0f, 100f);
         health = Mathf.Clamp(health, 0f, 100f);
+
+        UpdateHealthBar();
     }
 
-    // Retirer des points de vie au joueur
     public void TakeDamage(float damage)
     {
         health = Mathf.Clamp(health - damage, 0f, 100f);
+        UpdateHealthBar();
     }
 
-    // Restaurer la faim lorsque le joueur mange
     public void RestoreHunger(float amount)
     {
         hunger = Mathf.Clamp(hunger + amount, 0f, 100f);
+    }
+
+    void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            healthBar.value = health;
+        }
     }
 }
