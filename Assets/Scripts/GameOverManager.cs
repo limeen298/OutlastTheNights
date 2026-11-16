@@ -1,4 +1,5 @@
 
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,7 +30,6 @@ public class GameOverManager : MonoBehaviour
         gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
 
-        // Liberer la souris pendant le Game Over
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -37,11 +37,18 @@ public class GameOverManager : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
-
         SceneManager.LoadScene(
             SceneManager.GetActiveScene().buildIndex
         );
     }
+
+    public void QuitGame()
+    {
+        Time.timeScale = 1f;
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
+    }
 }
-
-
